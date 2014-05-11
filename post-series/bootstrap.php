@@ -8,15 +8,17 @@
  * Author URI: http://www.patrickneary.co
  */
 
+// Add actions
+add_action( 'init', 'pjn_ps_register_series_taxonomy', 10 );
+add_action( 'wp_enqueue_scripts', 'pjn_ps_enqueue_style', 10 );
 
-add_action( 'init', 'register_series', 10 );
-add_action( 'wp_enqueue_scripts', 'style_script', 10 );
-add_filter( 'the_content', 'content_query', 10 );
+// Add filter
+add_filter( 'the_content', 'pjn_ps_add_series_links', 10 );
 
 /**
  * Registers the series taxonomy
  */
-function register_series() {
+function pjn_ps_register_series_taxonomy() {
 
     $labels = array(
         'name'              => _x( 'Series', 'taxonomy general name' ),
@@ -54,7 +56,7 @@ function register_series() {
  * @param $content string the current content
  * @return string modified content
  */
-function content_query( $content ) {
+function pjn_ps_add_series_links( $content ) {
 
     global $post;
 
@@ -72,8 +74,10 @@ function content_query( $content ) {
     // Build the arguments for the query
     $args = array(
         'post_type' => 'post',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
         'tax_query' => array(
-            array(
+                   array(
                 'taxonomy' => 'series',
                 'field' => 'slug',
                 'terms' => $series->slug
@@ -86,7 +90,10 @@ function content_query( $content ) {
     $posts = $query->posts;
 
     // Open a list
-    $additional = '<div class="series-container"><p>This post is part of the series <a href="' . get_term_link( $series, 'series' ) . '" title="' . $series->name . '" >' . $series->name . '</a></p><ul>';
+    $additional = '<div class="series-container"><p>This post is part of the series: <a href="' . get_term_link( $series, 'series' ) . '" title="' . $series->name . '" >' . $series->name . '</a></p><ul>';
+
+    // Prepare counter
+    $counter = 1;
 
     // Loop through each post
     foreach ($posts as $relatedPost) {
@@ -99,7 +106,9 @@ function content_query( $content ) {
         }
 
         // Link to each post in a list item
-        $additional .= '<li><a ' . $class . ' href="' . get_permalink( $relatedPost->ID ) . '" title ="' . $relatedPost->post_title . '">' . $relatedPost->post_title . '</a></li>';
+        $additional .= '<li><a ' . $class . ' href="' . get_permalink( $relatedPost->ID ) . '" title ="' . $relatedPost->post_title . '">Part ' . $counter . ': ' . $relatedPost->post_title . '</a></li>';
+
+        $counter++;
     }
 
     // Close the list
@@ -117,6 +126,6 @@ function content_query( $content ) {
  *
  * Locates the appropriate css file and adds it to the page
  */
-function style_script() {
-    wp_enqueue_style( 'series-style', plugins_url() . '/postseries/css/style.css' );
+function pjn_ps_enqueue_style() {
+    wp_enqueue_style( 'series-style', plugins_url() . '/post-series/css/style.css' );
 }
