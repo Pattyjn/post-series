@@ -1,0 +1,20 @@
+.series-container {
+    border: solid 1px #24890d;
+    background-color: #d8fbd0;
+    padding: 1em;
+    float: left;
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.series-container p {
+    margin-bottom: 0.5em;
+}
+
+.series-container ul {
+    margin-bottom: 0;
+}
+
+.series-container .current {
+    font-weight: bold;
+}
