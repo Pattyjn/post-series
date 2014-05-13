@@ -76,8 +76,10 @@ function pjn_ps_add_series_links( $content ) {
         'post_type' => 'post',
         'posts_per_page' => -1,
         'post_status' => 'publish',
+        'order' => 'ASC',
+        'orderby' => 'date',
         'tax_query' => array(
-                   array(
+            array(
                 'taxonomy' => 'series',
                 'field' => 'slug',
                 'terms' => $series->slug
