@@ -76,7 +76,7 @@ function pjn_ps_add_series_links( $content ) {
         'post_type' => 'post',
         'posts_per_page' => -1,
         'post_status' => 'publish',
-        'order' => 'ASC',
+        'order' => 'DESC',
         'orderby' => 'date',
         'tax_query' => array(
             array(
@@ -95,7 +95,7 @@ function pjn_ps_add_series_links( $content ) {
     $additional = '<div class="series-container"><p>This post is part of the series: <a href="' . get_term_link( $series, 'series' ) . '" title="' . $series->name . '" >' . $series->name . '</a></p><ul>';
 
     // Prepare counter
-    $counter = 1;
+    $counter = count( $posts );
 
     // Loop through each post
     foreach ($posts as $relatedPost) {
@@ -110,7 +110,7 @@ function pjn_ps_add_series_links( $content ) {
         // Link to each post in a list item
         $additional .= '<li><a ' . $class . ' href="' . get_permalink( $relatedPost->ID ) . '" title ="' . $relatedPost->post_title . '">Part ' . $counter . ': ' . $relatedPost->post_title . '</a></li>';
 
-        $counter++;
+        $counter--;
     }
 
     // Close the list
